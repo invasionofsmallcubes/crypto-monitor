@@ -1,0 +1,21 @@
+{
+  "name": "deals-bot",
+  "version": "0.0.1",
+  "description": "get the latest deals!",
+  "main": "main/app.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha"
+  },
+  "author": "Emanuele Ianni",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^4.1.2",
+    "express": "^4.15.5",
+    "mocha": "^3.5.3",
+    "request": "^2.82.0"
+  },
+  "devDependencies": {
+    "jasmine-node": "^1.14.5",
+    "supertest": "^3.0.0"
+  }
+}
