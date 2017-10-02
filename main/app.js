@@ -1,15 +1,34 @@
-//Load express module with `require` directive
-var express = require('express')
-var app = express()
+var express = require('express');
 
-//Define request response in root URL (/)
+var app = express();
+
+const TelegramBot = require('node-telegram-bot-api');
+
+const token = '478152078:AAG2PcGOOc1NGaEm5n5BKuBU6N8OBI9yTQ8';
+
+const bot = new TelegramBot(token, {polling: true});
+
 app.get('/', function (req, res) {
-  res.send('Hello World')
-})
+    res.send('Hello World')
+});
 
-//Launch listening server on port 8080
 app.listen(8080, function () {
-  console.log('App listening on port 8080!')
-})
+    console.log('App listening on port 8080!')
+});
 
 module.exports = app;
+
+// bot.onText(/\/echo (.+)/, function onEchoText(msg, match) {
+//     const resp = match[1];
+//     console.log("echo " + chatId);
+//     bot.sendMessage(msg.chat.id, resp);
+// });
+
+bot.onText(/\/start/, function onEchoText(msg) {
+    console.log("saving..." + chatId);
+    bot.sendMessage(msg.chat.id, "*Welcome!*");
+});
+
+bot.on('message', function (msg) {
+    console.log("message " + chatId);
+});
