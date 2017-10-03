@@ -18,13 +18,23 @@ app.listen(8080, function () {
 
 module.exports = app;
 
-// bot.onText(/\/echo (.+)/, function onEchoText(msg, match) {
-//     const resp = match[1];
-//     console.log("echo " + chatId);
-//     bot.sendMessage(msg.chat.id, resp);
-// });
+bot.onText(/\/adminebardoculo (.+)/, function onEchoText(msg, match) {
+    const resp = match[1];
+    console.log("sending to everybody " + resp);
+    bot.sendMessage(msg.chat.id, resp);
+});
+
+bot.onText(/\/ping/, function onEchoText(msg) {
+    console.log("pong!");
+    bot.sendMessage(msg.chat.id, "pong!");
+});
 
 bot.onText(/\/start/, function onEchoText(msg) {
+    console.log("saving..." + chatId);
+    bot.sendMessage(msg.chat.id, "*Welcome!*");
+});
+
+bot.onText(/\/unsubscribe/, function onEchoText(msg) {
     console.log("saving..." + chatId);
     bot.sendMessage(msg.chat.id, "*Welcome!*");
 });
