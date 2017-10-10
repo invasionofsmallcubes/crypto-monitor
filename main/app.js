@@ -1,58 +1,117 @@
 const express = require('express');
 const r = require('rethinkdb');
-const promisify = require("es6-promisify");
+const tbot = require('node-telegram-bot-api');
+
+const TABLE = 'subscribers';
+const TOKEN = 'TOKEN';
+const DB = 'beecoolit';
+const DB_HOST = 'localhost';
+const DB_PORT = 28015;
+const HTTP_PORT = 8090;
+const PASSWORD = 'PASSWORD';
+
+const bot = new tbot(TOKEN, {polling: true});
+
+var connection = null;
+r.connect({host: DB_HOST, port: DB_PORT, db: DB}, function (err, conn) {
+    if (err) throw err;
+    connection = conn;
+});
 
 var app = express();
 
-// const db_connect = promisify(r.connect);
-
-// db_connect({ host: '127.0.0.1', port: 28015})
-//     .then(function (connection) {
-//         console.log(connection);
-//         r.db('test').tableCreate('authors').run(connection, function(err, result) {
-//             console.log(JSON.stringify(result, null, 2));
-//         });
-//     }).catch(function (err) {
-//         console.error('Ops!', err);
-// });
-
-
-const TelegramBot = require('node-telegram-bot-api');
-
-const token = '478152078:AAG2PcGOOc1NGaEm5n5BKuBU6N8OBI9yTQ8';
-
-const bot = new TelegramBot(token, {polling: true});
-
 app.get('/', function (req, res) {
-    res.send('Hello World');
+    r.table(TABLE).count().run(connection, function (error, count) {
+        res.send('Count: ' + count);
+    });
+
 });
 
-app.listen(8080, function () {
-    console.log('App listening on port 8080!');
+app.listen(HTTP_PORT, function () {
+    console.log('App listening on port ' + HTTP_PORT + '!');
 });
 
 module.exports = app;
 
-bot.onText(/\/adminbardoculo (.+) (.+)/, function onEchoText(msg, match) {
-    const resp1 = match[1];
-    const resp2 = match[2];
-    console.log("sending to everybody " + resp1);
-    console.log("sending to everybody " + resp2);
+bot.onText(/\/adminbardoculo ([\w-\/\\\*\&\#\%\@]+) (.+)/, function onEchoText(msg, match) {
+
+    const chatId = msg.chat.id;
+    const password = match[1];
+
+    if (password === PASSWORD) {
+
+        const message = match[2];
+        r.table(TABLE)
+            .run(connection)
+            .then(function (cursor) {
+                cursor.each(function (error, row) {
+                    bot.sendMessage(row['chatId'], message, {parse_mode: 'markdown'});
+                });
+            }).error(function (error) {
+            var errorText = JSON.stringify(error, null, 2);
+            bot.sendMessage(chatId, errorText);
+            console.error(errorText);
+        });
+
+        r.table(TABLE)
+            .count()
+            .run(connection)
+            .then(function (count) {
+                bot.sendMessage(chatId, 'Message sent to ' + count + ' people');
+            }).error(function (error) {
+
+            bot.sendMessage(chatId, "There was an error!!");
+            console.error('problem with counting people');
+
+            var errorText = JSON.stringify(error, null, 2);
+            bot.sendMessage(chatId, errorText);
+            console.error(errorText);
+        });
+    } else {
+        console.error(chatId + ' attempted to use send command!');
+        bot.sendMessage(chatId, "You can't use that command!");
+    }
 });
 
 bot.onText(/\/ping/, function onEchoText(msg) {
-    console.log("pong from chat id: " + msg.chat.id );
+    console.log("pong from chat id: " + msg.chat.id);
     bot.sendMessage(msg.chat.id, "pong!");
 });
 
 bot.onText(/\/start/, function onEchoText(msg) {
+
     console.log("saving... " + msg.chat.id);
-    bot.sendMessage(msg.chat.id, "*Welcome!*");
+
+    r.table(TABLE)
+        .get(msg.chat.id)
+        .replace({chatId: msg.chat.id})
+        .run(connection)
+        .then(function (insert) {
+            console.log("inserted:");
+            console.log(JSON.stringify(insert, null, 2));
+        }).error(function (error) {
+        console.error(JSON.stringify(error));
+    });
+
+    bot.sendMessage(msg.chat.id, 'Welcome!');
+
 });
 
 bot.onText(/\/unsubscribe/, function onEchoText(msg) {
-    console.log("unsubscribing... " + chatId);
-    bot.sendMessage(msg.chat.id, "*Sad to see you leave! Hope you come back soon :)*");
+    console.log("unsubscribing... " + msg.chat.id);
+
+    r.table(TABLE)
+        .filter(r.row('chatId').eq(msg.chat.id))
+        .delete()
+        .run(connection)
+        .then(function (deleted) {
+            console.log("deleted:");
+            console.log(JSON.stringify(deleted, null, 2));
+        }).error(function (error) {
+        console.error(JSON.stringify(error));
+    });
+
+    bot.sendMessage(msg.chat.id, 'Sad to see you leave! Hope you come back soon :)');
 });
 
 bot.on('message', function (msg) {

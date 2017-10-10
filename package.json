@@ -11,15 +11,14 @@
   "license": "ISC",
   "dependencies": {
     "chai": "^4.1.2",
-    "es6-promisify": "^5.0.0",
     "express": "^4.15.5",
-    "mocha": "^3.5.3",
     "node-telegram-bot-api": "^0.28.0",
     "request": "^2.82.0",
     "rethinkdb": "^2.3.3"
   },
   "devDependencies": {
     "jasmine-node": "^1.14.5",
+    "mocha": "^3.5.3",
     "supertest": "^3.0.0"
   }
 }
