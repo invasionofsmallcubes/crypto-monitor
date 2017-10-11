@@ -7,8 +7,8 @@ Stuff to be done:
 - ~implement `/start`~
 - ~implement `/unsubscribe`~
 - ~implement `/adminbardoculo`~
-- use environment variables
-- implement `/adminbardoculo` with environment variables
+- ~use environment variables~
+- ~implement `/adminbardoculo` with environment variables~
 - split responsibilities!!
 - integration tests
 

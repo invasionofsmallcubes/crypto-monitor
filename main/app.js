@@ -3,12 +3,13 @@ const r = require('rethinkdb');
 const tbot = require('node-telegram-bot-api');
 
 const TABLE = 'subscribers';
-const TOKEN = 'TOKEN';
 const DB = 'beecoolit';
-const DB_HOST = 'localhost';
+
+const PASSWORD = process.env.PASSWORD || function() { throw new Error("please set the PASSWORD environmental variable"); };
+const TOKEN = process.env.TOKEN || 'TOKEN';
+const DB_HOST = process.env.DB_HOST || 'localhost';
 const DB_PORT = 28015;
-const HTTP_PORT = 8090;
-const PASSWORD = 'PASSWORD';
+const HTTP_PORT = process.env.HTTP_PORT || 8081;
 
 const bot = new tbot(TOKEN, {polling: true});
 
