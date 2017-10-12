@@ -3,7 +3,7 @@
 Stuff to be done:
 
 - ~use promises~
-- install rethinkdb on raspberry pi 3
+- ~install rethinkdb on raspberry pi 3 (impossible to compile, switched to lokijs)~
 - ~implement `/start`~
 - ~implement `/unsubscribe`~
 - ~implement `/adminbardoculo`~
@@ -11,9 +11,3 @@ Stuff to be done:
 - ~implement `/adminbardoculo` with environment variables~
 - split responsibilities!!
 - integration tests
-
-To create the default table:
-```
-r.dbCreate('beecoolit');
-r.db('beecoolit').tableCreate('subscribers', {primaryKey: 'chatId'});
-```
