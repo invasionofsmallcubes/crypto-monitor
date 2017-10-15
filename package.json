@@ -15,7 +15,9 @@
     "lokijs": "^1.5.1",
     "node-telegram-bot-api": "^0.28.0",
     "request": "^2.82.0",
-    "rethinkdb": "^2.3.3"
+    "rethinkdb": "^2.3.3",
+    "winston": "^2.4.0",
+    "winston-papertrail": "^1.0.5"
   },
   "devDependencies": {
     "jasmine-node": "^1.14.5",

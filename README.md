@@ -9,5 +9,6 @@ Stuff to be done:
 - ~implement `/adminbardoculo`~
 - ~use environment variables~
 - ~implement `/adminbardoculo` with environment variables~
+- ~papertrail~
 - split responsibilities!!
 - integration tests

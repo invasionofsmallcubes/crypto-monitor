@@ -2,6 +2,8 @@ const express = require('express');
 const tbot = require('node-telegram-bot-api');
 const loki = require("lokijs");
 const LokiFSStructuredAdapter = require('lokijs/src/loki-fs-structured-adapter');
+const winston = require('winston');
+const Papertrail = require('winston-papertrail').Papertrail;
 
 const TABLE = 'subscribers';
 const DB = 'beecoolit';
@@ -9,32 +11,46 @@ const DB = 'beecoolit';
 const PASSWORD = process.env.PASSWORD || function () {
     throw new Error("please set the PASSWORD environmental variable");
 };
+
 const TOKEN = process.env.TOKEN || 'TOKEN';
 
 const HTTP_PORT = process.env.HTTP_PORT || 8081;
 
+const PAPERTRAIL_HOST = process.env.PAPERTRAIL_HOST || 'localhost';
+const PAPERTRAIL_PORT = rocess.env.PAPERTRAIL_PORT || 8080;
+
 const bot = new tbot(TOKEN, {polling: true});
 
-var db = new loki(DB + '.db', {
+const logger = new winston.Logger({
+    transports: [
+        new Papertrail({
+            host: PAPERTRAIL_HOST,
+            port: PAPERTRAIL_PORT,
+            colorize: true
+        })
+    ]
+});
+
+const db = new loki(DB + '.db', {
     adapter: new LokiFSStructuredAdapter(),
     autoload: true,
-    autoloadCallback : databaseInitialize,
+    autoloadCallback: databaseInitialize
 });
 
 function databaseInitialize() {
-    var table = db.getCollection(TABLE);
+    let table = db.getCollection(TABLE);
     if (table === null) {
         table = db.addCollection(TABLE);
     }
 
-    var app = express();
+    const app = express();
 
     app.get('/', function (req, res) {
         res.send('Count: ' + table.count());
     });
 
     app.listen(HTTP_PORT, function () {
-        console.log('App listening on port ' + HTTP_PORT + '!');
+        logger.info('App listening on port ' + HTTP_PORT + '!');
     });
 
     module.exports = app;
@@ -54,30 +70,30 @@ function databaseInitialize() {
 
             bot.sendMessage(chatId, 'Message sent to ' + table.count() + ' people');
         } else {
-            console.error(chatId + ' attempted to use send command!');
+            logger.error(chatId + ' attempted to use send command!');
             bot.sendMessage(chatId, "You can't use that command!");
         }
     });
 
     bot.onText(/\/ping/, function onEchoText(msg) {
-        console.log("pong from chat id: " + msg.chat.id);
+        logger.info("pong from chat id: " + msg.chat.id);
         bot.sendMessage(msg.chat.id, "pong!");
     });
 
     bot.onText(/\/start/, function onEchoText(msg) {
 
-        console.log("saving... " + msg.chat.id);
+        logger.info("saving... " + msg.chat.id);
 
-        var user = table.findOne({chatId: msg.chat.id});
+        let user = table.findOne({chatId: msg.chat.id});
         if (!user) {
             table.insert({chatId: msg.chat.id});
         }
         db.saveDatabase(function (err) {
             if (err) {
-                console.log(err);
+                logger.info(err);
             }
             else {
-                console.log("saved... it can now be loaded or reloaded with up to date data");
+                logger.info("saved... it can now be loaded or reloaded with up to date data");
             }
         });
 
@@ -86,16 +102,16 @@ function databaseInitialize() {
     });
 
     bot.onText(/\/unsubscribe/, function onEchoText(msg) {
-        console.log("unsubscribing... " + msg.chat.id);
+        logger.info("unsubscribing... " + msg.chat.id);
 
-        var user = table.findOne({chatId: msg.chat.id});
+        let user = table.findOne({chatId: msg.chat.id});
         table.remove(user);
         db.saveDatabase(function (err) {
             if (err) {
-                console.log(err);
+                logger.info(err);
             }
             else {
-                console.log("saved... it can now be loaded or reloaded with up to date data");
+                logger.info("saved... it can now be loaded or reloaded with up to date data");
             }
         });
 
@@ -103,6 +119,6 @@ function databaseInitialize() {
     });
 
     bot.on('message', function (msg) {
-        console.log(JSON.stringify(msg, null, 2));
+        logger.info(JSON.stringify(msg, null, 2));
     });
 }
