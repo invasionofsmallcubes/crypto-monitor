@@ -17,7 +17,7 @@ const TOKEN = process.env.TOKEN || 'TOKEN';
 const HTTP_PORT = process.env.HTTP_PORT || 8081;
 
 const PAPERTRAIL_HOST = process.env.PAPERTRAIL_HOST || 'localhost';
-const PAPERTRAIL_PORT = rocess.env.PAPERTRAIL_PORT || 8080;
+const PAPERTRAIL_PORT = process.env.PAPERTRAIL_PORT || 8080;
 
 const bot = new tbot(TOKEN, {polling: true});
 
