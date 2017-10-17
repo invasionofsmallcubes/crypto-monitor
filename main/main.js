@@ -4,6 +4,8 @@ const loki = require("lokijs");
 const LokiFSStructuredAdapter = require('lokijs/src/loki-fs-structured-adapter');
 const winston = require('winston');
 const Papertrail = require('winston-papertrail').Papertrail;
+const makeUserRepository = require('./userRepository');
+const initRepository = require('./lokijsInit');
 
 const TABLE = 'subscribers';
 const DB = 'beecoolit';
@@ -38,15 +40,12 @@ const db = new loki(DB + '.db', {
 });
 
 function databaseInitialize() {
-    let table = db.getCollection(TABLE);
-    if (table === null) {
-        table = db.addCollection(TABLE);
-    }
+    let userRepository = makeUserRepository(initRepository(db), logger);
 
     const app = express();
 
     app.get('/', function (req, res) {
-        res.send('Count: ' + table.count());
+        res.send('Count: ' + userRepository.getCount());
     });
 
     app.listen(HTTP_PORT, function () {
@@ -63,12 +62,12 @@ function databaseInitialize() {
         if (password === PASSWORD) {
             const message = match[2];
 
-            const users = table.chain().data();
+            const users = userRepository.findAllUsers();
             for (let user of users) {
                 bot.sendMessage(user.chatId, message, {parse_mode: 'markdown'});
             }
 
-            bot.sendMessage(chatId, 'Message sent to ' + table.count() + ' people');
+            bot.sendMessage(chatId, 'Message sent to ' + userRepository.getCount() + ' people');
         } else {
             logger.error(chatId + ' attempted to use send command!');
             bot.sendMessage(chatId, "You can't use that command!");
@@ -82,35 +81,21 @@ function databaseInitialize() {
 
     bot.onText(/\/start/, function onEchoText(msg) {
 
-        logger.info("saving... " + msg.chat.id);
+        let id = msg.chat.id;
+        logger.info("saving... " + id);
 
-        let user = table.findOne({chatId: msg.chat.id});
+        let user = userRepository.findById(id);
         if (!user) {
-            table.insert({chatId: msg.chat.id});
+            userRepository.save(id);
         }
-        db.saveDatabase(function (err) {
-            if (err) {
-                logger.error(err);
-            }
-        });
 
-        bot.sendMessage(msg.chat.id, 'Welcome!');
-
+        bot.sendMessage(id, 'Welcome!');
     });
 
     bot.onText(/\/unsubscribe/, function onEchoText(msg) {
         logger.info("unsubscribing... " + msg.chat.id);
 
-        let user = table.findOne({chatId: msg.chat.id});
-        table.remove(user);
-        db.saveDatabase(function (err) {
-            if (err) {
-                logger.info(err);
-            }
-            else {
-                logger.info("saved... it can now be loaded or reloaded with up to date data");
-            }
-        });
+        userRepository.delete(msg.chat.id);
 
         bot.sendMessage(msg.chat.id, 'Sad to see you leave! Hope you come back soon :)');
     });
