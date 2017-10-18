@@ -10,9 +10,9 @@ const makeController = require('./controller');
 const TABLE = 'subscribers';
 const DB = 'beecoolit';
 
-const PASSWORD = process.env.PASSWORD || function () {
+const PASSWORD = process.env.PASSWORD || (function () {
     throw new Error("please set the PASSWORD environmental variable");
-};
+}());
 
 const TOKEN = process.env.TOKEN || 'TOKEN';
 
@@ -32,10 +32,6 @@ const logger = new winston.Logger({
         })
     ]
 });
-
-const logger = {
-    info: console.log
-};
 
 const db = new loki(DB + '.db', {
     adapter: new LokiFSStructuredAdapter(),
