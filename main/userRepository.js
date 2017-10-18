@@ -1,6 +1,7 @@
-export function makeUserRepository({db, logger}) {
+function makeUserRepository(db, logger) {
     return {
         getCount: async () => {
+            console.log(db);
             return db.count();
         },
         findAllUsers: async () => {
@@ -31,3 +32,5 @@ export function makeUserRepository({db, logger}) {
         }
     }
 }
+
+module.exports = makeUserRepository;

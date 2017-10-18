@@ -1,4 +1,3 @@
-const express = require('express');
 const tbot = require('node-telegram-bot-api');
 const loki = require("lokijs");
 const LokiFSStructuredAdapter = require('lokijs/src/loki-fs-structured-adapter');
@@ -6,6 +5,7 @@ const winston = require('winston');
 const Papertrail = require('winston-papertrail').Papertrail;
 const makeUserRepository = require('./userRepository');
 const initRepository = require('./lokijsInit');
+const makeController = require('./controller');
 
 const TABLE = 'subscribers';
 const DB = 'beecoolit';
@@ -33,26 +33,20 @@ const logger = new winston.Logger({
     ]
 });
 
+const logger = {
+    info: console.log
+};
+
 const db = new loki(DB + '.db', {
     adapter: new LokiFSStructuredAdapter(),
     autoload: true,
-    autoloadCallback: databaseInitialize
+    autoloadCallback: appBootStrap
 });
 
-function databaseInitialize() {
-    let userRepository = makeUserRepository(initRepository(db), logger);
+function appBootStrap() {
 
-    const app = express();
-
-    app.get('/', function (req, res) {
-        res.send('Count: ' + userRepository.getCount());
-    });
-
-    app.listen(HTTP_PORT, function () {
-        logger.info('App listening on port ' + HTTP_PORT + '!');
-    });
-
-    module.exports = app;
+    const userRepository = makeUserRepository(initRepository(db, TABLE), logger);
+    makeController(userRepository, HTTP_PORT, logger);
 
     bot.onText(/\/adminbardoculo ([\w-\/\\\*\&\#\%\@]+) (.+)/, function onEchoText(msg, match) {
 
@@ -104,3 +98,5 @@ function databaseInitialize() {
         logger.info(JSON.stringify(msg, null, 2));
     });
 }
+
+module.exports = appBootStrap;
