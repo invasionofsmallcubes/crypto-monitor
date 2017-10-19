@@ -1,6 +1,6 @@
 const express = require('express');
 
-function makeController(userRepository, HTTP_PORT, logger) {
+function makeRestController(userRepository, HTTP_PORT, logger) {
             const app = express();
             app.get('/', function (req, res) {
                 userRepository.getCount().then((count) => res.send(`Count: ${count}`));
@@ -11,4 +11,4 @@ function makeController(userRepository, HTTP_PORT, logger) {
             return app;
 }
 
-module.exports = makeController;
+module.exports = makeRestController;

@@ -5,14 +5,12 @@ const winston = require('winston');
 const Papertrail = require('winston-papertrail').Papertrail;
 const makeUserRepository = require('./userRepository');
 const initRepository = require('./lokijsInit');
-const makeController = require('./controller');
+const makeRestController = require('./controller');
 
 const TABLE = 'subscribers';
 const DB = 'beecoolit';
 
-const PASSWORD = process.env.PASSWORD || (function () {
-    throw new Error("please set the PASSWORD environmental variable");
-}());
+const PASSWORD = process.env.PASSWORD || (function () { throw new Error("please set the PASSWORD environmental variable");}());
 
 const TOKEN = process.env.TOKEN || 'TOKEN';
 
@@ -20,18 +18,6 @@ const HTTP_PORT = process.env.HTTP_PORT || 8081;
 
 const PAPERTRAIL_HOST = process.env.PAPERTRAIL_HOST || 'localhost';
 const PAPERTRAIL_PORT = process.env.PAPERTRAIL_PORT || 8080;
-
-const bot = new tbot(TOKEN, {polling: true});
-
-const logger = new winston.Logger({
-    transports: [
-        new Papertrail({
-            host: PAPERTRAIL_HOST,
-            port: PAPERTRAIL_PORT,
-            colorize: true
-        })
-    ]
-});
 
 const db = new loki(DB + '.db', {
     adapter: new LokiFSStructuredAdapter(),
@@ -41,15 +27,27 @@ const db = new loki(DB + '.db', {
 
 function appBootStrap() {
 
-    const userRepository = makeUserRepository(initRepository(db, TABLE), logger);
-    makeController(userRepository, HTTP_PORT, logger);
+    const bot = new tbot(TOKEN, {polling: true});
 
+    const logger = new winston.Logger({
+        transports: [
+            new Papertrail({
+                host: PAPERTRAIL_HOST,
+                port: PAPERTRAIL_PORT,
+                colorize: true
+            })
+        ]
+    });
+
+    const userRepository = makeUserRepository(initRepository(db, TABLE), logger);
+    makeRestController(userRepository, HTTP_PORT, logger);
+
+    
     bot.onText(/\/adminbardoculo ([\w-\/\\\*\&\#\%\@]+) (.+)/, function onEchoText(msg, match) {
 
         const chatId = msg.chat.id;
-        const password = match[1];
 
-        if (password === PASSWORD) {
+        if (match[1] === PASSWORD) {
             const message = match[2];
 
             const users = userRepository.findAllUsers();
@@ -62,6 +60,7 @@ function appBootStrap() {
             logger.error(chatId + ' attempted to use send command!');
             bot.sendMessage(chatId, "You can't use that command!");
         }
+
     });
 
     bot.onText(/\/ping/, function onEchoText(msg) {
