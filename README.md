@@ -1,4 +1,4 @@
-*Learning Javascript via a Telegram BOT!*
+*Writing a Telegram BOT!*
 
 Stuff to be done:
 
@@ -10,7 +10,7 @@ Stuff to be done:
 - ~use environment variables~
 - ~implement `/adminbardoculo` with environment variables~
 - ~papertrail~
-- split responsibilities!!
+- ~split responsibilities!!~
 - integration tests
     - information that can be used to test the telegram bot:
         - since it's polling the call is:
