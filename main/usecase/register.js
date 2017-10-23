@@ -9,3 +9,5 @@ function makeRegister(userRepository, messageProvider, logger) {
         }
     }
 }
+
+module.exports = makeRegister;

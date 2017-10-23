@@ -7,3 +7,5 @@ function makeDeletion(userRepository, messageProvider, logger) {
         }
     }
 }
+
+module.exports = makeDeletion;

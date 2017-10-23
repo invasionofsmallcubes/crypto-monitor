@@ -15,3 +15,5 @@ function makeAdmin(PASSWORD, userRepository, messageProvider, logger) {
         }
     }
 }
+
+module.exports = makeAdmin;
