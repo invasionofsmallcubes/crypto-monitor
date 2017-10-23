@@ -6,6 +6,10 @@ const Papertrail = require('winston-papertrail').Papertrail;
 const makeUserRepository = require('./userRepository');
 const initRepository = require('./lokijsInit');
 const makeRestController = require('./controller');
+const makeMessageProvider = require('./messageProvider');
+const makeAdmin = require('./usecase/admin');
+const makeRegister = require('./usecase/register');
+const makeDeletion = require('./usecase/delete');
 
 const TABLE = 'subscribers';
 const DB = 'beecoolit';
@@ -41,56 +45,34 @@ function appBootStrap() {
 
     const userRepository = makeUserRepository(initRepository(db, TABLE), logger);
     makeRestController(userRepository, HTTP_PORT, logger);
-
+    const messageProvider = makeMessageProvider(bot);
+    const admin = makeAdmin(PASSWORD, userRepository, messageProvider, logger);
+    const register = makeRegister(userRepository, messageProvider, logger);
+    const deletion = makeDeletion(userRepository, messageProvider);
     
     bot.onText(/\/adminbardoculo ([\w-\/\\\*\&\#\%\@]+) (.+)/, function onEchoText(msg, match) {
-
         const chatId = msg.chat.id;
+        const password = match[1];
+        const message = match[2];
+        admin.handle(chatId, password, message);
+    });
 
-        if (match[1] === PASSWORD) {
-            const message = match[2];
+    bot.onText(/\/start/, function onEchoText(msg) {
+        register.handle(msg.chat.id);
+    });
 
-            const users = userRepository.findAllUsers();
-            for (let user of users) {
-                bot.sendMessage(user.chatId, message, {parse_mode: 'markdown'});
-            }
-
-            bot.sendMessage(chatId, 'Message sent to ' + userRepository.getCount() + ' people');
-        } else {
-            logger.error(chatId + ' attempted to use send command!');
-            bot.sendMessage(chatId, "You can't use that command!");
-        }
-
+    bot.onText(/\/unsubscribe/, function onEchoText(msg) {
+        deletion.handle(msg.chat.id);
     });
 
     bot.onText(/\/ping/, function onEchoText(msg) {
         logger.info("pong from chat id: " + msg.chat.id);
-        bot.sendMessage(msg.chat.id, "pong!");
-    });
-
-    bot.onText(/\/start/, function onEchoText(msg) {
-
-        let id = msg.chat.id;
-        logger.info("saving... " + id);
-
-        let user = userRepository.findById(id);
-        if (!user) {
-            userRepository.save(id);
-        }
-
-        bot.sendMessage(id, 'Welcome!');
-    });
-
-    bot.onText(/\/unsubscribe/, function onEchoText(msg) {
-        logger.info("unsubscribing... " + msg.chat.id);
-
-        userRepository.delete(msg.chat.id);
-
-        bot.sendMessage(msg.chat.id, 'Sad to see you leave! Hope you come back soon :)');
+        messageProvider.send(msg.chat.id, "pong!");
     });
 
     bot.on('message', function (msg) {
         logger.info(JSON.stringify(msg, null, 2));
+        messageProvider.send(msg.chat.id, 'Sorry I didn\'t understand the command');
     });
 }
 
