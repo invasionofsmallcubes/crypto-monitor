@@ -1,20 +1,18 @@
 {
   "name": "deals-bot",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "get the latest deals!",
   "main": "main/app.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha && jest",
+    "test": "./node_modules/jest/bin/jest.js --forceExit",
     "start": "node main/app.js"
   },
   "author": "Emanuele Ianni",
   "license": "ISC",
   "dependencies": {
-    "chai": "^4.1.2",
     "express": "^4.16.2",
     "lokijs": "^1.5.1",
     "node-telegram-bot-api": "^0.28.0",
-    "request": "^2.83.0",
     "rethinkdb": "^2.3.3",
     "winston": "^2.4.0",
     "winston-papertrail": "^1.0.5"
@@ -22,7 +20,7 @@
   "devDependencies": {
     "jasmine-node": "^1.14.5",
     "jest": "^21.2.1",
-    "mocha": "^3.5.3",
-    "supertest": "^3.0.0"
+    "supertest": "^3.0.0",
+    "request": "^2.83.0"
   }
 }
