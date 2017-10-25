@@ -5,10 +5,10 @@ function makeRestController(userRepository, HTTP_PORT, logger) {
             app.get('/', function (req, res) {
                 userRepository.getCount().then((count) => res.send(`Count: ${count}`));
             });
-            app.listen(HTTP_PORT, function () {
+            const server = app.listen(HTTP_PORT, function () {
                 logger.info('App listening on port ' + HTTP_PORT + '!');
             });
-            return app;
+            return server;
 }
 
 module.exports = makeRestController;

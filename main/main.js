@@ -31,18 +31,18 @@ const db = new loki(DB + '.db', {
 });
 
 function appBootStrap() {
-
+    const bot = new tbot(TOKEN, {polling: true});
     const logger = makeLogger(PAPERTRAIL_HOST, PAPERTRAIL_PORT);
     const table = initRepository(db, TABLE);
     const userRepository = makeUserRepository(table, logger);
-    const messageProvider = makeMessageProvider(tbot);
+    const messageProvider = makeMessageProvider(bot);
     const admin = makeAdmin(PASSWORD, userRepository, messageProvider, logger);
     const register = makeRegister(userRepository, messageProvider, logger);
     const deletion = makeDeletion(userRepository, messageProvider);
 
     makeRestController(userRepository, HTTP_PORT, logger);
 
-    makeBotController(tbot, admin, register, deletion, messageProvider, logger);
+    makeBotController(bot, admin, register, deletion, messageProvider, logger);
 
 }
 

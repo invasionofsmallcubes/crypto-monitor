@@ -20,7 +20,8 @@
   "devDependencies": {
     "jasmine-node": "^1.14.5",
     "jest": "^21.2.1",
-    "supertest": "^3.0.0",
-    "request": "^2.83.0"
+    "nock": "^9.0.25",
+    "request": "^2.83.0",
+    "supertest": "^3.0.0"
   }
 }

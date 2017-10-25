@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../main/controller/restController');
+const makeRestController = require('../main/controller/restController');
 const userRepository = {
     getCount: async () => {
         return 2;
@@ -10,7 +10,15 @@ const logger = {
     }
 };
 
-let appUnderTest = app(userRepository, 8081, logger);
+let appUnderTest = null;
+
+beforeEach(() => {
+    appUnderTest = makeRestController(userRepository, 8081, logger);
+});
+
+afterEach(() => {
+    appUnderTest.close();
+});
 
 test('test count', function (done) {
     request(appUnderTest)

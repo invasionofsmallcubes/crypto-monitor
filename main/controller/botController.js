@@ -16,13 +16,11 @@ function makeBotController(bot, admin, register, deletion, messageProvider, logg
     });
 
     bot.onText(/\/ping/, function onEchoText(msg) {
-        logger.info("pong from chat id: " + msg.chat.id);
         messageProvider.send(msg.chat.id, "pong!");
     });
 
     bot.on('message', function (msg) {
         logger.info(JSON.stringify(msg, null, 2));
-        messageProvider.send(msg.chat.id, 'Sorry I didn\'t understand the command');
     });
 
     return bot;

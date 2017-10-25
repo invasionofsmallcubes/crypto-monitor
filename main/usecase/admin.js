@@ -1,6 +1,6 @@
 function makeAdmin(PASSWORD, userRepository, messageProvider, logger) {
     return {
-        handle: function(id, sentPassword, message) {
+        handle: function (id, sentPassword, message) {
             if (sentPassword === PASSWORD) {
                 const users = userRepository.findAllUsers();
                 for (let user of users) {
