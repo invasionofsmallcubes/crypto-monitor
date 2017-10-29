@@ -16,8 +16,8 @@ beforeEach(() => {
     appUnderTest = makeRestController(userRepository, 8081, logger);
 });
 
-afterEach(() => {
-    appUnderTest.close();
+afterEach((done) => {
+    appUnderTest.close(done);
 });
 
 test('test count', function (done) {

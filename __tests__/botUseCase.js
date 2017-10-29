@@ -10,7 +10,6 @@ const deletion = {handle: jest.fn()};
 const messageProvider = {send: jest.fn()};
 const logger = {
     info: function (text) {
-        console.log(text)
     }
 };
 
@@ -29,8 +28,9 @@ beforeEach(() => {
 
 });
 
-afterEach(() => {
+afterEach((done) => {
     bot.stopPolling();
+    done();
 });
 
 test('I can answer to \/ping', () => {
