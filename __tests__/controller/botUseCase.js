@@ -1,5 +1,5 @@
 const nock = require('nock');
-const makeBotController = require('../main/controller/botController');
+const makeBotController = require('../../main/controller/botController');
 const tbot = require('node-telegram-bot-api');
 
 let bot = null;

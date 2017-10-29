@@ -3,10 +3,10 @@ const LokiFSStructuredAdapter = require('lokijs/src/loki-fs-structured-adapter')
 const tbot = require('node-telegram-bot-api');
 
 const makeLogger = require('./logger');
-const makeUserRepository = require('./userRepository');
+const makeUserRepository = require('./adapters/userRepository');
 const initRepository = require('./lokijsInit');
 const makeRestController = require('./controller/restController');
-const makeMessageProvider = require('./messageProvider');
+const makeMessageProvider = require('./adapters/messageProvider');
 const makeAdmin = require('./usecase/admin');
 const makeRegister = require('./usecase/register');
 const makeDeletion = require('./usecase/delete');
