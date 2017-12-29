@@ -1,19 +1,14 @@
 const mongodb = require('mongodb')
 
-const url = 'CONNECTION_URL'
+const url = 'CONNECTION URL'
 
 describe.skip('my beverage', () => {
     test('can work', function (done) {
 
-        mongodb.MongoClient.connect(url, (err, client) => {
-
-            if(err) {
-                console.log(err);
-                expect(false).toBe(true);
-            } else {
-                expect(true).toBe(true);
-            }
-
+        mongodb
+        .MongoClient
+        .connect(url)
+        .then( (client) => {
             const db = client.db("test");
 
             const collection = db.collection('testDocuments');
@@ -34,27 +29,47 @@ describe.skip('my beverage', () => {
                     name: "F",
                     symbol: "B3",
                     last_updated: new Date(127, 10)
-                }],
-            (err, result) => {
-                if (err) { expect(false).toBe(true); }
+                }])
+                .then( (result) => {
+                    collection
+                    .find({name : "F"})
+                    .sort({last_updated: -1})
+                    .limit(2)
+                    .toArray()
+                    .then( (results) => {
 
-                collection
-                .find({name : "F"})
-                .sort({last_updated: -1})
-                .limit(2)
-                .toArray( (err, result) => {
-                        if (err) { expect(false).toBe(true); }
-                        expect(result.length).toBe(2);
-                        expect(result[0].last_updated).toEqual(new Date(127, 10));
-                        expect(result[0].name).toBe('F');
+                        expect(results.length).toBe(2);
+                        expect(results[0].last_updated).toEqual(new Date(127, 10));
+                        expect(results[0].name).toBe('F');
+
                         collection
-                        .drop( (err, delOK) => {
-                            if (err) { expect(false).toBe(true); }
+                        .drop()
+                        .then( (delOK) => {
                             expect(delOK).toBe(true);
                             client.close();
                             done();
+                        })
+                        .catch( (err) => {
+                            console.log(err);
+                            expect(false).toBe(true);
+                            client.close();
                         });
+                    })
+                    .catch( (err) => {
+                        console.log(err);
+                        expect(false).toBe(true);
+                        client.close();
                     });
+            })
+            .catch( (err) => {
+                console.log(err);
+                expect(false).toBe(true);
+                client.close();
+            })
+            .catch( (err) => {
+                console.log(err);
+                expect(false).toBe(true);
+                client.close();
             });
         });
     });
