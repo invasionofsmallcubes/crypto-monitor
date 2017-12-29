@@ -2,3 +2,4 @@ node_modules
 .idea
 *.db
 *.db.0
+deals-bot.iml
