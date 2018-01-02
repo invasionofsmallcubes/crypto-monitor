@@ -2,7 +2,7 @@ const nock = require('nock');
 
 var Client = require('node-rest-client').Client;
 
-beforeEach(() => {
+beforeEach( () => {
     nock.disableNetConnect();
 
     nock('https://api.coinmarketcap.com')

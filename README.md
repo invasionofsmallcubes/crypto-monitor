@@ -11,7 +11,7 @@ Stuff to be done:
 - ~implement `/adminbardoculo` with environment variables~
 - ~papertrail~
 - ~split responsibilities!!~
-- integration tests
+- ~integration tests~
     - information that can be used to test the telegram bot:
         - since it's polling the call is:
             ```
