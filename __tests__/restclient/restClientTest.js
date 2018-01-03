@@ -80,4 +80,4 @@ describe('I can respond to query', () => {
 
     });
 
-})
+});

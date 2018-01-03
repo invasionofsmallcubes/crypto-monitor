@@ -1,23 +1,12 @@
-const mongodb = require('mongodb');
-
-function makeCoinRepository(url, dbName, documentName) {
+function makeCoinRepository(client, dbName, documentName) {
     return {
         save: async (coin) => {
-            return mongodb
-                .MongoClient
-                .connect(url)
-                .then((client) => {
                     return client
                         .db(dbName)
                         .collection(documentName)
                         .insertMany([coin]);
-                });
         },
         findLast: async (name) => {
-            return mongodb
-                .MongoClient
-                .connect(url)
-                .then((client) => {
                     return client
                         .db(dbName)
                         .collection(documentName)
@@ -37,13 +26,8 @@ function makeCoinRepository(url, dbName, documentName) {
                                 return undefined
                             }
                         });
-                });
         },
         findLastRecordsAbout: async (name, limit) => {
-            return mongodb
-                .MongoClient
-                .connect(url)
-                .then((client) => {
                     return client
                         .db(dbName)
                         .collection(documentName)
@@ -61,7 +45,6 @@ function makeCoinRepository(url, dbName, documentName) {
                                 }
                             });
                         });
-                });
         }
     }
 }

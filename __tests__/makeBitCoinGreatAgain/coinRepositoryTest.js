@@ -2,6 +2,7 @@ const mongodb = require('mongodb');
 const makeCoinRepository = require('../../main/makeBitCoinGreatAgain/coinRepository');
 
 const HOST_URL = 'mongodb://localhost:27017';
+//const HOST_URL = 'mongodb://eianni:C1aoghe1%24@cryptostats-shard-00-00-uivrk.mongodb.net:27017,cryptostats-shard-00-01-uivrk.mongodb.net:27017,cryptostats-shard-00-02-uivrk.mongodb.net:27017/test?ssl=true&replicaSet=CryptoStats-shard-0&authSource=admin';
 const DB_NAME = 'test';
 const DOCUMENT_NAME = 'coins';
 
@@ -33,10 +34,11 @@ beforeEach((done) => {
         });
 });
 
-describe('Given a database', () => {
+describe.skip('Given a database', async () => {
 
     test('I can save a coin', (done) => {
-        makeCoinRepository(HOST_URL, DB_NAME, DOCUMENT_NAME)
+    mongodb.MongoClient.connect(HOST_URL).then( (client) => {
+        makeCoinRepository(client, DB_NAME, DOCUMENT_NAME)
             .save({something: 'OK'})
             .then((result) => {
                 expect(result.insertedCount).toBe(1);
@@ -47,10 +49,12 @@ describe('Given a database', () => {
                 expect(false).toBeTruthy();
                 done();
             });
+            });
     });
 
     test('I can find the latest coin', (done) => {
-        makeCoinRepository(HOST_URL, DB_NAME, DOCUMENT_NAME)
+        mongodb.MongoClient.connect(HOST_URL).then( (client) => {
+        makeCoinRepository(client, DB_NAME, DOCUMENT_NAME)
             .findLast('COIN_SYMBOL')
             .then((result) => {
                 expect(result).toEqual({
@@ -66,10 +70,12 @@ describe('Given a database', () => {
                 expect(false).toBeTruthy();
                 done();
             });
+            });
     });
 
     test('I can handle coin not found', (done) => {
-        makeCoinRepository(HOST_URL, DB_NAME, DOCUMENT_NAME)
+        mongodb.MongoClient.connect(HOST_URL).then( (client) => {
+        makeCoinRepository(client, DB_NAME, DOCUMENT_NAME)
             .findLast('NOT_FOUND')
             .then((result) => {
                 expect(result).toBeUndefined();
@@ -79,10 +85,13 @@ describe('Given a database', () => {
                 expect(false).toBeTruthy();
                 done();
             });
+            });
     });
 
     test('I can handle last records', (done) => {
-        makeCoinRepository(HOST_URL, DB_NAME, DOCUMENT_NAME)
+        mongodb.MongoClient.connect(HOST_URL).then( (client) => {
+
+        makeCoinRepository(client, DB_NAME, DOCUMENT_NAME)
             .findLastRecordsAbout('COIN_SYMBOL', 3)
             .then((results) => {
                 expect(results.length).toBe(2);
@@ -93,10 +102,13 @@ describe('Given a database', () => {
                 expect(false).toBeTruthy();
                 done();
             });
+            });
     });
 
     test('I can handle last records not found', (done) => {
-        makeCoinRepository(HOST_URL, DB_NAME, DOCUMENT_NAME)
+            mongodb.MongoClient.connect(HOST_URL).then( (client) => {
+
+        makeCoinRepository(client, DB_NAME, DOCUMENT_NAME)
             .findLastRecordsAbout('NOT_FOUND', 3)
             .then((results) => {
                 expect(results.length).toBe(0);
@@ -106,6 +118,7 @@ describe('Given a database', () => {
                 console.log(e);
                 expect(false).toBeTruthy();
                 done();
+            });
             });
     });
 

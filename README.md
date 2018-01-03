@@ -6,8 +6,12 @@ Stuff to be done:
     - ~findLast with no value~
     - ~findLastHours~
     - ~findLastHours not found~
-    - test with production connection (to check for mongodb version compatibility)
+    - ~test with production connection (to check for mongodb version compatibility)~
 - integration, save last hour
+    - test with jest a promise
+- add centralized log
+- add bot communication
+- add rest endpoint
 - ~use promises~
 - ~install rethinkdb on raspberry pi 3 (impossible to compile, switched to lokijs)~
 - ~implement `/start`~
