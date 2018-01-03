@@ -1,7 +1,13 @@
-*Writing a Telegram BOT!*
+*Writing a Telegram BOT and nodejs*
 
 Stuff to be done:
 
+- ~mongodb repository~
+    - ~findLast with no value~
+    - ~findLastHours~
+    - ~findLastHours not found~
+    - test with production connection (to check for mongodb version compatibility)
+- integration, save last hour
 - ~use promises~
 - ~install rethinkdb on raspberry pi 3 (impossible to compile, switched to lokijs)~
 - ~implement `/start`~

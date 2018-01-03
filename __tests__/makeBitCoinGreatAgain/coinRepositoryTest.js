@@ -1,45 +1,9 @@
-const mongodb = require('mongodb')
+const mongodb = require('mongodb');
+const makeCoinRepository = require('../../main/makeBitCoinGreatAgain/coinRepository');
 
-const HOST_URL = 'CONN';
+const HOST_URL = 'mongodb://localhost:27017';
 const DB_NAME = 'test';
 const DOCUMENT_NAME = 'coins';
-
-function makeCoinRepository(url, dbName, documentName) {
-    return {
-        save: async (coin) => {
-            return mongodb
-                .MongoClient
-                .connect(url)
-                .then((client) => {
-                    return client
-                        .db(dbName)
-                        .collection(documentName)
-                        .insertMany([coin]);
-                });
-        },
-        findLast : async (name) => {
-            return mongodb
-                .MongoClient
-                .connect(url)
-                .then((client) => {
-                    return client
-                        .db(dbName)
-                        .collection(documentName)
-                        .find({symbol: name})
-                        .sort({when: -1})
-                        .toArray()
-                        .then( (results) => {
-                            return {
-                                hourlyDiff: results[0].hourlyDiff,
-                                symbol: results[0].symbol,
-                                volume: results[0].volume,
-                                when: results[0].when
-                            };
-                        });
-                });
-        }
-    }
-}
 
 beforeEach((done) => {
     mongodb
@@ -69,7 +33,7 @@ beforeEach((done) => {
         });
 });
 
-describe.skip('Given a database', () => {
+describe('Given a database', () => {
 
     test('I can save a coin', (done) => {
         makeCoinRepository(HOST_URL, DB_NAME, DOCUMENT_NAME)
@@ -98,11 +62,53 @@ describe.skip('Given a database', () => {
                 done();
             })
             .catch((e) => {
-               console.log(e);
-               expect(false).toBeTruthy();
-               done();
+                console.log(e);
+                expect(false).toBeTruthy();
+                done();
             });
     });
+
+    test('I can handle coin not found', (done) => {
+        makeCoinRepository(HOST_URL, DB_NAME, DOCUMENT_NAME)
+            .findLast('NOT_FOUND')
+            .then((result) => {
+                expect(result).toBeUndefined();
+                done();
+            })
+            .catch((e) => {
+                expect(false).toBeTruthy();
+                done();
+            });
+    });
+
+    test('I can handle last records', (done) => {
+        makeCoinRepository(HOST_URL, DB_NAME, DOCUMENT_NAME)
+            .findLastRecordsAbout('COIN_SYMBOL', 3)
+            .then((results) => {
+                expect(results.length).toBe(2);
+                expect(results[0].when).toEqual(new Date(125));
+                done();
+            })
+            .catch((e) => {
+                expect(false).toBeTruthy();
+                done();
+            });
+    });
+
+    test('I can handle last records not found', (done) => {
+        makeCoinRepository(HOST_URL, DB_NAME, DOCUMENT_NAME)
+            .findLastRecordsAbout('NOT_FOUND', 3)
+            .then((results) => {
+                expect(results.length).toBe(0);
+                done();
+            })
+            .catch((e) => {
+                console.log(e);
+                expect(false).toBeTruthy();
+                done();
+            });
+    });
+
 });
 
 afterEach((done) => {
@@ -120,77 +126,3 @@ afterEach((done) => {
                 });
         });
 });
-
-// describe('I can use a mongodb', () => {
-//     test('can work', function (done) {
-//
-//         mongodb
-//         .MongoClient
-//         .connect(url)
-//         .then( (client) => {
-//             const db = client.db("test");
-//
-//             const collection = db.collection('testDocuments');
-//
-//             collection
-//             .insertMany([
-//                 {
-//                     name: "F",
-//                     symbol: "B1",
-//                     last_updated: new Date(123, 10)
-//                 },
-//                 {
-//                     name: "F",
-//                     symbol: "B2",
-//                     last_updated: new Date(125, 10)
-//                 },
-//                 {
-//                     name: "F",
-//                     symbol: "B3",
-//                     last_updated: new Date(127, 10)
-//                 }])
-//                 .then( (result) => {
-//                     collection
-//                     .find({name : "F"})
-//                     .sort({last_updated: -1})
-//                     .limit(2)
-//                     .toArray()
-//                     .then( (results) => {
-//
-//                         expect(results.length).toBe(2);
-//                         expect(results[0].last_updated).toEqual(new Date(127, 10));
-//                         expect(results[0].name).toBe('F');
-//
-//                         collection
-//                         .drop()
-//                         .then( (delOK) => {
-//                             expect(delOK).toBe(true);
-//                             client.close();
-//                             done();
-//                         })
-//                         .catch( (err) => {
-//                             console.log(err);
-//                             expect(false).toBe(true);
-//                             client.close();
-//                         });
-//                     })
-//                     .catch( (err) => {
-//                         console.log(err);
-//                         expect(false).toBe(true);
-//                         client.close();
-//                     });
-//             })
-//             .catch( (err) => {
-//                 console.log(err);
-//                 expect(false).toBe(true);
-//                 client.close();
-//             })
-//             .catch( (err) => {
-//                 console.log(err);
-//                 expect(false).toBe(true);
-//                 client.close();
-//             });
-//         });
-//     });
-// });
-

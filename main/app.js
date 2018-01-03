@@ -118,4 +118,8 @@ function databaseInitialize() {
     bot.on('message', function (msg) {
         logger.info(JSON.stringify(msg, null, 2));
     });
+
+    // setTimeout(() => {
+    //
+    // }, 3600000);
 }
