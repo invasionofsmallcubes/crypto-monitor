@@ -22,16 +22,19 @@ const MONGO_DB_NAME = 'test';
 const MONGO_DB_COLLECTION = 'coins';
 
 const TIME_REPEAT = 3600000;
+//const TIME_REPEAT = 36000;
 
 const mongodb = require('mongodb');
 
 setInterval(async () => {
     try {
+        console.log('starting...');
         const client = await mongodb.MongoClient.connect(MONGO_DB_URL)
         const coinProvider = makeCoinProvider();
         const providerRepository = makeCoinRepository(client, MONGO_DB_NAME, MONGO_DB_COLLECTION);
         await coinRegister(coinProvider, providerRepository);
         client.close();
+        console.log('finished...');
     } catch (e) {
         console.log('FOUND ERROR');
         console.log(e);
