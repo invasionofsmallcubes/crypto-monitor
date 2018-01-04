@@ -2,7 +2,6 @@ const mongodb = require('mongodb');
 const makeCoinRepository = require('../../main/makeBitCoinGreatAgain/coinRepository');
 
 const HOST_URL = 'mongodb://localhost:27017';
-//const HOST_URL = 'mongodb://eianni:C1aoghe1%24@cryptostats-shard-00-00-uivrk.mongodb.net:27017,cryptostats-shard-00-01-uivrk.mongodb.net:27017,cryptostats-shard-00-02-uivrk.mongodb.net:27017/test?ssl=true&replicaSet=CryptoStats-shard-0&authSource=admin';
 const DB_NAME = 'test';
 const DOCUMENT_NAME = 'coins';
 
