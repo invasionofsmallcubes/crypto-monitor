@@ -26,6 +26,8 @@ const TIME_REPEAT = 3600000;
 
 const mongodb = require('mongodb');
 
+makeRestController(HTTP_PORT, MONGO_DB_URL, MONGO_DB_COLLECTION, MONGO_DB_NAME);
+
 setInterval(async () => {
     try {
         console.log('starting...');
