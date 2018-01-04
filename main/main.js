@@ -17,11 +17,11 @@ const HTTP_PORT = process.env.HTTP_PORT || 8081;
 const PAPERTRAIL_HOST = process.env.PAPERTRAIL_HOST || 'localhost';
 const PAPERTRAIL_PORT = process.env.PAPERTRAIL_PORT || 8080;
 
-const MONGO_DB_URL = process.env.MONGO_DB_URL || 'mongodb://eianni:C1aoghe1%24@cryptostats-shard-00-00-uivrk.mongodb.net:27017,cryptostats-shard-00-01-uivrk.mongodb.net:27017,cryptostats-shard-00-02-uivrk.mongodb.net:27017/test?ssl=true&replicaSet=CryptoStats-shard-0&authSource=admin';
+const MONGO_DB_URL = process.env.MONGO_DB_URL || 'http://localhost:27017';
 const MONGO_DB_NAME = 'test';
 const MONGO_DB_COLLECTION = 'coins';
 
-const TIME_REPEAT = 2000;
+const TIME_REPEAT = 3600000;
 
 const mongodb = require('mongodb');
 
