@@ -1,4 +1,4 @@
-*Writing a Telegram BOT and nodejs*
+*Writing lots of stuff with nodejs for a Raspberry*
 
 Stuff to be done:
 
