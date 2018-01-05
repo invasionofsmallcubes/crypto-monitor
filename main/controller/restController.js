@@ -4,6 +4,12 @@ const makeCoinRepository = require('../makeBitCoinGreatAgain/coinRepository');
 
 function makeRestController(HTTP_PORT, MONGO_DB_URL, MONGO_DB_COLLECTION, MONGO_DB_NAME) {
     const app = express();
+
+    app.use(function (req, res, next) {
+      res.set('Access-Control-Allow-Origin', '*');
+      next();
+    });
+
     app.get('/:coin', function async(req, res) {
         const client = mongodb.MongoClient.connect(MONGO_DB_URL).then((client) => {
             makeCoinRepository(client, MONGO_DB_NAME, MONGO_DB_COLLECTION)
