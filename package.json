@@ -2,7 +2,7 @@
   "name": "deals-bot",
   "version": "0.0.2",
   "description": "get the latest deals!",
-  "main": "main/app.js",
+  "main": "main/main.js",
   "scripts": {
     "test": "./node_modules/jest/bin/jest.js --forceExit",
     "start": "node main/app.js"
@@ -12,6 +12,7 @@
   "dependencies": {
     "express": "^4.16.2",
     "lokijs": "^1.5.1",
+    "memory-cache": "^0.2.0",
     "mongodb": "^3.0.1",
     "node-rest-client-promise": "^3.0.0",
     "node-telegram-bot-api": "^0.28.0",
