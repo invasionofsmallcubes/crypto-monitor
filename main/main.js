@@ -22,8 +22,8 @@ const MONGO_DB_URL = process.env.MONGO_DB_URL || 'mongodb://localhost:27017';
 const MONGO_DB_NAME = 'test';
 const MONGO_DB_COLLECTION = 'coins';
 
-//const TIME_REPEAT = 3600000;
- const TIME_REPEAT = 36000;
+const TIME_REPEAT = 3600000;
+// const TIME_REPEAT = 1200000;
 
 const mongodb = require('mongodb');
 async function init() {
