@@ -3,9 +3,8 @@ const mongodb = require('mongodb');
 const makeCoinRepository = require('../makeBitCoinGreatAgain/coinRepository');
 const coinResults = require('../makeBitCoinGreatAgain/coinResults');
 const makeCoinProvider = require('../makeBitCoinGreatAgain/coinProvider');
-const cache = require('memory-cache');
 
-function makeRestController(HTTP_PORT, MONGO_DB_URL, MONGO_DB_COLLECTION, MONGO_DB_NAME, TIME_REPEAT) {
+function makeRestController(HTTP_PORT, cache, coinProvider, coinRepository, TIME_REPEAT) {
 
     const app = express();
 
@@ -19,10 +18,8 @@ function makeRestController(HTTP_PORT, MONGO_DB_URL, MONGO_DB_COLLECTION, MONGO_
                 let coins = cache.get('coins');
                 if (coins === null) {
                     console.log('not found in cache')
-                    const client = await mongodb.MongoClient.connect(MONGO_DB_URL);
-                    coins = await coinResults(makeCoinProvider(), makeCoinRepository(client, MONGO_DB_NAME, MONGO_DB_COLLECTION));
-                    client.close();
-                    cache.put('coins', coins, TIME_REPEAT);
+                    coins = await coinResults(coinProvider, coinRepository);
+                    cache.put('coins', coins);
                 }
                 res.send(coins);
             } catch (e) {
@@ -32,10 +29,8 @@ function makeRestController(HTTP_PORT, MONGO_DB_URL, MONGO_DB_COLLECTION, MONGO_
 
     app.get('/:coin', async function (req, res) {
     try {
-        const client = await mongodb.MongoClient.connect(MONGO_DB_URL);
-        const coins = await makeCoinRepository(client, MONGO_DB_NAME, MONGO_DB_COLLECTION)
+        const coins = await coinRepository
         .findLastRecordsAbout(req.params['coin'], 24);
-        client.close();
         res.send(coins);
         } catch (e) {
             console.log(e);

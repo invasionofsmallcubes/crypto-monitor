@@ -7,6 +7,7 @@ const makeBotController = require('./controller/botController');
 const makeCoinProvider = require('./makeBitCoinGreatAgain/coinProvider');
 const makeCoinRepository = require('./makeBitCoinGreatAgain/coinRepository');
 const coinRegister = require('./makeBitCoinGreatAgain/coinRegister');
+const cache = require('memory-cache');
 
 //const PASSWORD = process.env.PASSWORD || (function () { throw new Error("please set the PASSWORD environmental variable");}());
 
@@ -21,27 +22,30 @@ const MONGO_DB_URL = process.env.MONGO_DB_URL || 'mongodb://localhost:27017';
 const MONGO_DB_NAME = 'test';
 const MONGO_DB_COLLECTION = 'coins';
 
-const TIME_REPEAT = 3600000;
-// const TIME_REPEAT = 36000;
+//const TIME_REPEAT = 3600000;
+ const TIME_REPEAT = 36000;
 
 const mongodb = require('mongodb');
+async function init() {
 
-makeRestController(HTTP_PORT, MONGO_DB_URL, MONGO_DB_COLLECTION, MONGO_DB_NAME, TIME_REPEAT);
+    const client = await mongodb.MongoClient.connect(MONGO_DB_URL);
 
-setInterval(async () => {
-    try {
-        console.log('starting...');
-        const client = await mongodb.MongoClient.connect(MONGO_DB_URL);
-        const coinProvider = makeCoinProvider();
-        const providerRepository = makeCoinRepository(client, MONGO_DB_NAME, MONGO_DB_COLLECTION);
-        await coinRegister(coinProvider, providerRepository, () => {
-            return new Date()
-        });
-        client.close();
-        console.log('finished...');
-    } catch (e) {
-        console.log('FOUND ERROR');
-        console.log(e);
-    }
-}, TIME_REPEAT);
+    const coinProvider = makeCoinProvider();
 
+    const coinRepository = makeCoinRepository(client, MONGO_DB_NAME, MONGO_DB_COLLECTION);
+
+    makeRestController(HTTP_PORT, cache, coinProvider, coinRepository, TIME_REPEAT);
+
+    setInterval(async () => {
+        try {
+            console.log('starting...');
+            await coinRegister(coinProvider, coinRepository, () => { return new Date() }, cache);
+            console.log('finished...');
+        } catch (e) {
+            console.log('FOUND ERROR');
+            console.log(e);
+        }
+    }, TIME_REPEAT);
+}
+
+init();

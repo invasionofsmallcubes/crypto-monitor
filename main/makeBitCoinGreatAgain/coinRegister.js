@@ -1,10 +1,11 @@
-async function coinRegister(coinProvider, coinRepository, dateProvider) {
+async function coinRegister(coinProvider, coinRepository, dateProvider, cache) {
         const coins = await coinProvider.getCoins();
-          await Promise.all(coins.map(async (current) => {
-                const lastHour = await coinRepository.findLast(current.symbol);
-                let newRecord = createRecord(lastHour, current, dateProvider());
-                await coinRepository.save(newRecord);
+        await Promise.all(coins.map(async (current) => {
+            const lastHour = await coinRepository.findLast(current.symbol);
+            let newRecord = createRecord(lastHour, current, dateProvider());
+            await coinRepository.save(newRecord);
           }));
+        cache.del('coins');
 }
 
 function createRecord(lastHour, current, date) {
