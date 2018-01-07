@@ -20,11 +20,11 @@ function makeRestController(HTTP_PORT, MONGO_DB_URL, MONGO_DB_COLLECTION, MONGO_
                 if (coins === null) {
                     console.log('not found in cache')
                     const client = await mongodb.MongoClient.connect(MONGO_DB_URL);
-                    moneys = await coinResults(makeCoinProvider(), makeCoinRepository(client, MONGO_DB_NAME, MONGO_DB_COLLECTION));
+                    coins = await coinResults(makeCoinProvider(), makeCoinRepository(client, MONGO_DB_NAME, MONGO_DB_COLLECTION));
                     client.close();
-                    cache.put('coins', moneys, TIME_REPEAT);
+                    cache.put('coins', coins, TIME_REPEAT);
                 }
-                res.send(moneys);
+                res.send(coins);
             } catch (e) {
                 console.log(e);
             }
@@ -33,10 +33,10 @@ function makeRestController(HTTP_PORT, MONGO_DB_URL, MONGO_DB_COLLECTION, MONGO_
     app.get('/:coin', async function (req, res) {
     try {
         const client = await mongodb.MongoClient.connect(MONGO_DB_URL);
-        const money = makeCoinRepository(client, MONGO_DB_NAME, MONGO_DB_COLLECTION)
+        const coins = await makeCoinRepository(client, MONGO_DB_NAME, MONGO_DB_COLLECTION)
         .findLastRecordsAbout(req.params['coin'], 24);
         client.close();
-        res.send(elems);
+        res.send(coins);
         } catch (e) {
             console.log(e);
         }
