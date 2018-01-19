@@ -1,6 +1,6 @@
 const tbot = require('node-telegram-bot-api');
 
-const makeLogger = require('./logger');
+// const makeLogger = require('./logger');
 const makeRestController = require('./controller/restController');
 const makeMessageProvider = require('./adapters/messageProvider');
 const makeBotController = require('./controller/botController');
@@ -8,6 +8,7 @@ const makeCoinProvider = require('./makeBitCoinGreatAgain/coinProvider');
 const makeCoinRepository = require('./makeBitCoinGreatAgain/coinRepository');
 const coinRegister = require('./makeBitCoinGreatAgain/coinRegister');
 const cache = require('memory-cache');
+const makeLogger = require('./makeBitCoinGreatAgain/logger');
 
 //const PASSWORD = process.env.PASSWORD || (function () { throw new Error("please set the PASSWORD environmental variable");}());
 
@@ -28,24 +29,31 @@ const TIME_REPEAT = 3600000;
 const mongodb = require('mongodb');
 async function init() {
 
-    const client = await mongodb.MongoClient.connect(MONGO_DB_URL);
+    const logger = makeLogger()
+    
+    let client = null
+    try {
+        client = await mongodb.MongoClient.connect(MONGO_DB_URL)
+    } catch (e) {
+        logger.error(e)
+    }
 
-    const coinProvider = makeCoinProvider();
+    const coinProvider = makeCoinProvider(logger)
 
-    const coinRepository = makeCoinRepository(client, MONGO_DB_NAME, MONGO_DB_COLLECTION);
+    const coinRepository = makeCoinRepository(client, MONGO_DB_NAME, MONGO_DB_COLLECTION)
 
-    makeRestController(HTTP_PORT, cache, coinProvider, coinRepository, TIME_REPEAT);
+    makeRestController(HTTP_PORT, cache, coinProvider, coinRepository, TIME_REPEAT)
 
     setInterval(async () => {
         try {
-            console.log('starting...');
-            await coinRegister(coinProvider, coinRepository, () => { return new Date() }, cache);
-            console.log('finished...');
+            logger.info('starting...')
+            await coinRegister(coinProvider, coinRepository, () => { return new Date() }, cache)
+            logger.info('finished...')
         } catch (e) {
-            console.log('FOUND ERROR');
-            console.log(e);
+            logger.error('FOUND ERROR')
+            logger.error(e)
         }
-    }, TIME_REPEAT);
+    }, TIME_REPEAT)
 }
 
-init();
+init()

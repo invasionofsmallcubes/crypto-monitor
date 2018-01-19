@@ -1,9 +1,12 @@
 const provider = require('../../main/makeBitCoinGreatAgain/coinProvider');
 
-const nock = require('nock');
+const nock = require('nock')
+
+let logger = null
 
 beforeEach( () => {
     nock.disableNetConnect()
+    logger = {error: jest.fn()};
 });
 
 describe('Given a response from the server', () => {
@@ -67,12 +70,13 @@ describe('Given a response from the server', () => {
                     }
                 ]);
 
-        provider().getCoins()
+        provider(logger).getCoins()
         .then( (data) => {
             expect(data.length).toBe(3);
             expect(data[0].symbol).toBe("ETHOS");
             expect(data[0].volume).toBe(7275670.0);
             expect(data[0].when.toDateString()).toBe("Sun Jan 18 1970");
+            expect(logger.error.mock.calls.length).toBe(0);
             done()
         });
     });
@@ -83,8 +87,9 @@ describe('Given a response from the server', () => {
             .get('/v1/ticker/?limit=0')
             .reply(500, []);
 
-        provider().getCoins().then( (data) => {
+        provider(logger).getCoins().then( (data) => {
           expect(data.length).toBe(0)
+          expect(logger.error.mock.calls.length).toBe(1);
           done()
         })
     });
@@ -95,8 +100,9 @@ describe('Given a response from the server', () => {
             .get('/v1/ticker/?limit=0')
             .replyWithError({ 'message' : 500});
 
-        provider().getCoins().then( (data) => {
+        provider(logger).getCoins().then( (data) => {
           expect(data.length).toBe(0)
+          expect(logger.error.mock.calls.length).toBe(1);
           done()
         })
     });

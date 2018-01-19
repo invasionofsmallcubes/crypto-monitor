@@ -5,7 +5,7 @@
   "main": "main/main.js",
   "scripts": {
     "test": "./node_modules/jest/bin/jest.js --forceExit",
-    "start": "node main/app.js"
+    "start": "node main/main.js"
   },
   "author": "Emanuele Ianni",
   "license": "ISC",
