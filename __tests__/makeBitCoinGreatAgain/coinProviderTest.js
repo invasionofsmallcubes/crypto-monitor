@@ -83,11 +83,22 @@ describe('Given a response from the server', () => {
             .get('/v1/ticker/?limit=0')
             .reply(500, []);
 
-        provider().getCoins()
-        .catch( (error) => {
-            expect(error).toBe('Response was 500');
-            done()
-        });
+        provider().getCoins().then( (data) => {
+          expect(data.length).toBe(0)
+          done()
+        })
+    });
+
+    test('I get error when request replied with error', (done) => {
+
+        nock('https://api.coinmarketcap.com')
+            .get('/v1/ticker/?limit=0')
+            .replyWithError({ 'message' : 500});
+
+        provider().getCoins().then( (data) => {
+          expect(data.length).toBe(0)
+          done()
+        })
     });
 
 });
