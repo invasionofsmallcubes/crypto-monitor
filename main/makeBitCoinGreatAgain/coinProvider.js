@@ -1,6 +1,9 @@
+// @flow
+import Logger from './logger'
+
 var Client = require('node-rest-client-promise').Client
 
-function getCoinProvider(logger) {
+function getCoinProvider(logger: Logger) {
     return {
         getCoins: async function() {
             try {
@@ -14,12 +17,10 @@ function getCoinProvider(logger) {
                       when: new Date(parseInt(x.last_updated))} })
               } else {
                   logger.error('Response was ' + r.response.statusCode)
-                  console.log('Response was ' + r.response.statusCode)
                   return []
               }
           } catch (error) {
               logger.error(error)
-              console.log(error)
               return []
           }
         }

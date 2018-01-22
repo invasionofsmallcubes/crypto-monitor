@@ -1,11 +1,15 @@
-function getLogger() {
-    return {
-        error: function(message) {
-            console.log(message)
-        },        
-        info: function(message) {
-            console.log(message)
-        }
+// @flow
+
+export default class Logger {
+    error(message: string): void {
+        console.log(message)
+    }
+
+    info(message: string): void {
+        console.log(message)
     }
 }
-module.exports = getLogger;
+
+export function getLogger() : Logger {
+    return new Logger();
+}

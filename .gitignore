@@ -3,3 +3,5 @@ node_modules
 *.db
 *.db.0
 deals-bot.iml
+.vscode
+lib/
