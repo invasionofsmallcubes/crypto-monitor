@@ -1,13 +1,17 @@
+// @flow
+
 const tbot = require('node-telegram-bot-api');
 
 // const makeLogger = require('./logger');
 const makeRestController = require('./controller/restController');
 const makeMessageProvider = require('./adapters/messageProvider');
 const makeBotController = require('./controller/botController');
-const makeCoinProvider = require('./makeBitCoinGreatAgain/coinProvider').default;
-const makeCoinRepository = require('./makeBitCoinGreatAgain/coinRepository').default;
 const coinRegister = require('./makeBitCoinGreatAgain/coinRegister').default;
 const cache = require('memory-cache');
+
+import Logger from './makeBitCoinGreatAgain/logger'
+import { CoinProvider } from './makeBitCoinGreatAgain/coinProvider';
+import { CoinRepository } from './makeBitCoinGreatAgain/coinRepository';
 const makeLogger = require('./makeBitCoinGreatAgain/logger');
 
 //const PASSWORD = process.env.PASSWORD || (function () { throw new Error("please set the PASSWORD environmental variable");}());
@@ -29,7 +33,7 @@ const TIME_REPEAT = 3600000;
 const mongodb = require('mongodb');
 async function init() {
 
-    const logger = makeLogger()
+    const logger = new Logger()
     
     let client = null
     try {
@@ -38,9 +42,9 @@ async function init() {
         logger.error(e)
     }
 
-    const coinProvider = makeCoinProvider(logger)
+    const coinProvider = new CoinProvider(logger)
 
-    const coinRepository = makeCoinRepository(client, MONGO_DB_NAME, MONGO_DB_COLLECTION)
+    const coinRepository = new CoinRepository(client, MONGO_DB_NAME, MONGO_DB_COLLECTION)
 
     makeRestController(HTTP_PORT, cache, coinProvider, coinRepository, TIME_REPEAT)
 

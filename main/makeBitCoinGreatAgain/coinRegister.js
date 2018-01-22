@@ -2,7 +2,7 @@
 
 import { Coin, CoinProvider } from './coinProvider'
 
-let coinRegister = async (coinProvider: CoinProvider, coinRepository: any, dateProvider: any, cache: any) => {
+export default async function coinRegister(coinProvider: CoinProvider, coinRepository: any, dateProvider: any, cache: any): Promise<void> {
     const coins: Array<Coin> = await coinProvider.getCoins();
     await Promise.all(coins.map(async (current) => {
         const lastHour = await coinRepository.findLast(current.symbol);
@@ -19,5 +19,3 @@ function createRecord(lastHour, current, date) {
 function buildRecord(current, date, hourlyDiff) {
     return { symbol: current.symbol, volume: current.volume, when: date, hourlyDiff: hourlyDiff }
 }
-
-module.exports = coinRegister;

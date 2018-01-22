@@ -24,7 +24,7 @@ export class CoinRepository {
         this.documentName = documentName
     }
 
-    async save(coin: any) {
+    async save(coin: CoinProjection) {
         return this.client
             .db(this.dbName)
             .collection(this.documentName)

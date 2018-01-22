@@ -1,4 +1,4 @@
-const coinRegister = require('../../main/makeBitCoinGreatAgain/coinRegister');
+const coinRegister = require('../../main/makeBitCoinGreatAgain/coinRegister').default;
 
 describe('coin register use case', () => {
 
