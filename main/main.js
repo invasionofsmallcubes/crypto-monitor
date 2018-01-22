@@ -4,9 +4,9 @@ const tbot = require('node-telegram-bot-api');
 const makeRestController = require('./controller/restController');
 const makeMessageProvider = require('./adapters/messageProvider');
 const makeBotController = require('./controller/botController');
-const makeCoinProvider = require('./makeBitCoinGreatAgain/coinProvider');
-const makeCoinRepository = require('./makeBitCoinGreatAgain/coinRepository');
-const coinRegister = require('./makeBitCoinGreatAgain/coinRegister');
+const makeCoinProvider = require('./makeBitCoinGreatAgain/coinProvider').default;
+const makeCoinRepository = require('./makeBitCoinGreatAgain/coinRepository').default;
+const coinRegister = require('./makeBitCoinGreatAgain/coinRegister').default;
 const cache = require('memory-cache');
 const makeLogger = require('./makeBitCoinGreatAgain/logger');
 

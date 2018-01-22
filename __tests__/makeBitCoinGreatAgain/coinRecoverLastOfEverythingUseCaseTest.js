@@ -1,4 +1,4 @@
-const coinResults = require('../../main/makeBitCoinGreatAgain/coinResults');
+const coinResults = require('../../main/makeBitCoinGreatAgain/coinResults').default;
 
 describe('coin results use case', () => {
 

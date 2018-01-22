@@ -1,4 +1,4 @@
-const provider = require('../../main/makeBitCoinGreatAgain/coinProvider');
+let getCoinProvider = require('../../main/makeBitCoinGreatAgain/coinProvider').default;
 
 const nock = require('nock')
 
@@ -70,7 +70,7 @@ describe('Given a response from the server', () => {
                     }
                 ]);
 
-        provider(logger).getCoins()
+        getCoinProvider(logger).getCoins()
         .then( (data) => {
             expect(data.length).toBe(3);
             expect(data[0].symbol).toBe("ETHOS");
@@ -87,7 +87,7 @@ describe('Given a response from the server', () => {
             .get('/v1/ticker/?limit=0')
             .reply(500, []);
 
-        provider(logger).getCoins().then( (data) => {
+        getCoinProvider(logger).getCoins().then( (data) => {
           expect(data.length).toBe(0)
           expect(logger.error.mock.calls.length).toBe(1);
           done()
@@ -100,7 +100,7 @@ describe('Given a response from the server', () => {
             .get('/v1/ticker/?limit=0')
             .replyWithError({ 'message' : 500});
 
-        provider(logger).getCoins().then( (data) => {
+        getCoinProvider(logger).getCoins().then( (data) => {
           expect(data.length).toBe(0)
           expect(logger.error.mock.calls.length).toBe(1);
           done()
