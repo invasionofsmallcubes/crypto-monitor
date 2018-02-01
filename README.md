@@ -5,6 +5,8 @@ Stuff to be done:
 - add rest endpoint
 - add centralized log
 - add bot communication
+- add D3.js to show data
+- ~add flow~
 - ~mongodb repository~
     - ~findLast with no value~
     - ~findLastHours~
