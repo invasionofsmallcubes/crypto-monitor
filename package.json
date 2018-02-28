@@ -9,7 +9,9 @@
     "build": "babel main/ -d lib/",
     "flow-typed": "flow-typed",
     "prepublish": "npm run build",
-    "flow": "flow"
+    "flow": "flow",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "author": "Emanuele Ianni",
   "license": "ISC",
@@ -20,7 +22,8 @@
     "node-rest-client-promise": "^3.0.0",
     "node-telegram-bot-api": "^0.28.0",
     "winston": "^2.4.0",
-    "winston-papertrail": "^1.0.5"
+    "winston-papertrail": "^1.0.5",
+    "snyk": "^1.69.10"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -33,5 +36,6 @@
     "jest": "^21.2.1",
     "nock": "^9.0.25",
     "supertest": "^3.0.0"
-  }
+  },
+  "snyk": true
 }

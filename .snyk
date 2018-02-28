@@ -1,0 +1,16 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.10.2
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  'npm:bson:20180225':
+    - mongodb > mongodb-core > bson:
+        reason: None given
+        expires: '2018-03-30T16:12:23.857Z'
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:debug:20170905':
+    - node-rest-client-promise > node-rest-client > debug:
+        patched: '2018-02-28T16:12:23.859Z'
+  'npm:ms:20170412':
+    - node-rest-client-promise > node-rest-client > debug > ms:
+        patched: '2018-02-28T16:12:23.859Z'
