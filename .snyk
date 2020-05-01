@@ -1,5 +1,5 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.10.2
+version: v1.14.1
 # ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
   'npm:bson:20180225':
@@ -14,3 +14,6 @@ patch:
   'npm:ms:20170412':
     - node-rest-client-promise > node-rest-client > debug > ms:
         patched: '2018-02-28T16:12:23.859Z'
+  SNYK-JS-LODASH-567746:
+    - node-telegram-bot-api > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T02:08:18.734Z'
