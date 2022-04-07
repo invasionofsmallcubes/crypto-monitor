@@ -21,9 +21,9 @@
     "mongodb": "^3.1.13",
     "node-rest-client-promise": "^3.0.0",
     "node-telegram-bot-api": "^0.28.0",
-    "winston": "^2.4.0",
+    "winston": "^3.3.0",
     "winston-papertrail": "^1.0.5",
-    "snyk": "^1.425.4"
+    "snyk": "^1.465.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
