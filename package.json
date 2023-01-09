@@ -20,10 +20,10 @@
     "memory-cache": "^0.2.0",
     "mongodb": "^3.1.13",
     "node-rest-client-promise": "^3.0.0",
-    "node-telegram-bot-api": "^0.28.0",
+    "node-telegram-bot-api": "^0.30.0",
     "winston": "^2.4.0",
     "winston-papertrail": "^1.0.5",
-    "snyk": "^1.465.0"
+    "snyk": "^1.518.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
